@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What color do you want?</title>
+
+  <style>
+    @font-face {
+      font-family: 'NeoDunggeunmoPro-Regular';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/NeoDunggeunmoPro-Regular.woff2') format('woff2');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    * {
+      font-family: 'NeoDunggeunmoPro-Regular';
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 800%;
+      height: 10px;
+      background: white; /* 배경 색상 */
+      border-radius: 5px; /* 모서리 둥글게 */
+    }
+
+    /* 슬라이더 Thumb 색상 변경 */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: black; /* Thumb 색상 변경 */
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  .brush-controls {
+  display: flex;
+  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: space-between; /* 요소 간의 간격 조정 */
+  gap: 20px; /* 요소 사이의 간격 추가 */
+}
+
+.brush-controls label {
+  flex-grow: 1; /* 레이블이 가능한 공간을 채우게 함 */
+  max-width: 150px; /* 레이블의 최대 너비 설정 */
+  font-size: 1.2rem;
+  color: black !important; /* 색상 강제 적용 */
+  white-space: nowrap; /* 텍스트 줄 바꿈 방지 */
+}
+
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: black;
+      color: white;
+      position: relative;
+    }
+
+    .background {
+      position: absolute;
+      top: 15vh;
+      left: 0;
+      width: 100%;
+      height: calc(100% - 10vh);
+      background-image: url('./pinksalon.jpg');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.5;
+      z-index: -1;
+    }
+
+    h1 {
+      font-size: 6.5rem;
+      text-align: center;
+      color: magenta;
+      margin-top: 5vh;
+    }
+    h2 {
+        font-size: 1.5rem;
+        color: black;
+        background: magenta;
+
+    }
+
+
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70vh;
+    }
+
+    .vertical-text {
+  position: absolute; 
+  right: 12%; 
+  top: 72%; 
+  font-size: 1.5rem; 
+  color: black; 
+  background: magenta;
+  white-space: nowrap;
+}
+
+
+    
+    .face {
+      width: 220px;
+      height: 250px;
+      background-color: #ffe0b2; 
+      border-radius: 50%;
+      position: relative;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); 
+    }
+
+    
+    .hair {
+      position: absolute;
+      top: -30px; 
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 320px;
+      background-color: #8b4513; 
+      border-radius: 50% 50% 0 0; 
+      z-index: -1;
+      overflow: hidden;
+      transition: background-color 0.3s, height 0.3s, transform 0.3s; 
+    }
+
+    .hair-top {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 260px;
+      height: 150px; 
+      background-color: #8b4513;
+      z-index: 1;
+    }
+
+    .hair, .hair-top {
+  pointer-events: auto; /* 마우스 이벤트 허용 */
+}
+
+  
+    .bangs {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 100px;
+      background-color: #8b4513; 
+      border-radius: 50% 50% 0 0;
+      overflow: hidden;
+      transition: background-color 0.3s, height 0.3s;
+    }
+
+    .eye {
+      position: absolute;
+      top: 60px;
+      width: 70px;
+      height: 70px;
+      background-color: white; 
+      border-radius: 50%;
+      border: 0.5px solid black; 
+    }
+
+    .eye.left {
+      left: 30px; 
+    }
+
+    .eye.right {
+      right: 30px;
+    }
+
+    .pupil {
+      width: 30px;
+      height: 30px;
+      background-color: black; 
+      border-radius: 50%; 
+      position: absolute;
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%);
+    }
+
+    
+    .nose {
+      position: absolute;
+      top: 120px;
+      left: 50%; 
+      transform: translateX(-50%);
+      width: 20px;
+      height: 30px; 
+      background-color: #e59f71;
+      border-radius: 10px;
+    }
+
+    .mouth {
+      position: absolute;
+      top: 200px; 
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #e87d72; 
+      border-radius: 35px; 
+      border: none; 
+    }
+
+    .mouth::after {
+      content: '';
+      position: absolute;
+      width: 60px;
+      height: 15px;
+      border-radius: 0 0 20px 20px;
+      bottom: 100%; 
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #e87d72;
+      border: 4px solid #e87d72; 
+    }
+
+    .giphy-silhouette {
+      position: absolute;
+      left: 15%; 
+      top: 30%;
+      width: 120px; 
+      height: 120px;
+      background-color: magenta; 
+      border-radius: 50%; 
+      z-index: -1;
+    }
+
+    .giphy {
+      position: absolute;
+      left: 15.5%; 
+      top: 30%;
+      width: 100px; 
+      height: 100px;  
+      cursor: pointer;
+    }
+
+    .giphy-silhouette2 {
+      position: absolute;
+      right: 15%; 
+      bottom: 20%;
+      width: 120px; 
+      height: 120px;
+      background-color: magenta; 
+      border-radius: 50%; 
+      z-index: -1;
+    }
+
+    .giphy2 {
+      position: absolute;
+      right: 15%; 
+      bottom: 20%;
+      width: 140px; 
+      height: 140px; 
+      cursor: pointer;
+    }
+
+    .controls {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    
+    }
+
+
+    .color-picker {
+      margin-top: 40px;
+      width: 150px;
+      height: 50px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button {
+      font-size: 1.5rem;
+      color: magenta;
+      padding: 10px 20px;
+      background-color: black;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      background-color: magenta;
+      color: black;
+    }
+
+    .logo {
+      position: absolute;
+      left: 40px;
+      font-size: 1.5rem;
+      color: magenta;
+      border: 2px solid magenta;
+      border-radius: 10px;
+      padding: 5px 10px;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .welcome {
+      position: absolute;
+      left: 45px;
+      font-size: 1.2rem;
+      color: magenta;
+      margin-top: 45px;
+    }
+
+    .contact {
+      position: absolute;
+      right: 40px;
+      top: 20px;
+      font-size: 1.2rem;
+      color: magenta;
+      text-align: right;
+
+    .brush-area {
+      width: 800px;
+      height: 600px;
+      background-color: #f0e68c;
+      position: relative;
+      margin: 20px auto;
+      border: 2px solid magenta;
+      z-index: 10000; /* 가장 위에 그려지도록 설정 */
+}
+    }
+
+    .brush-controls {
+      display: flex;
+      padding-left: 1050px;
+      margin-top: -52px;
+      margin-bottom: 20px;
+    }
+
+    .brush-controls label {
+      margin-right: 10px;
+      font-size: 1.2rem;
+      color: white;
+    }
+
+    .brush-controls input, .brush-controls select {
+      margin-right: 20px;
+    }
+
+    .brush {
+      position: absolute;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div> 
+  <div class="logo">hairsalon</div> 
+  <div class="contact">Contact@<br>82+)0987-3456<br>pinksalon@gmail.com</div> <!-- 연락처 -->
+  <div class="welcome">Welcome to my salon.<br>dyeing/bleaching/toning</div> 
+  
+  <div class="giphy-silhouette"></div> 
+  <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmlhNmRma2RuZnFjN2FxYTAybndyOW8xOGFycWo5bzh0c2d2bGhmeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/ZeRYilsaVUWzyeMs7i/giphy.gif" alt="Giphy" class="giphy" id="giphy">
+  
+  <div class="giphy-silhouette2"></div>
+<img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExazFvZjZoOWl4eThic2MydHd4Z2pwMnVwZmVvN3JtaXV0d2dweHB6ZyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/2WGxF4scwfct3cH00U/giphy.gif" alt="Giphy" class="giphy2" id="giphy2">
+<div class="vertical-text">Replay!</div>
+
+
+  <h1>What color do you want?</h1>
+  <h2 style="text-align: left; color: black; padding-left: 260px; background: magenta;">Hair Cut<br>click the button!</h2>
+</div>
+
+  <div class="brush-controls">
+    <label for="brushSize">Brush Size:</label>
+    <input type="range" id="brushSize" min="10" max="100" value="20">
+
+    <label for="brushType">Brush Type:</label>
+    <select id="brushType">
+      <option value="pinkflower.png">pinkflower</option>
+      <option value="yellowheart.png">yellowheart</option>
+      <option value="whiteflower.png">whiteflower</option>
+      <option value="rainbow.png">rainbow</option>
+    </select>
+  </div>
+
+  <div class="brush-area" id="brushArea"></div>
+  
+  <div class="container">
+    <div class="face">
+      <div class="hair"></div>
+      <div class="bangs"></div>
+      <div class="eye left">
+        <div class="pupil"></div>
+      </div>
+      <div class="eye right">
+        <div class="pupil"></div>
+      </div>
+      <div class="nose"></div>
+      <div class="mouth"></div>
+    </div>
+    
+    <div class="controls">
+  <button id="cut-hair-btn">Cut Hair</button>
+  <button id="cut-bangs-btn">Cut Bangs</button>
+</div>
+
+<input type="color" id="color-picker" class="color-picker" value="#8b4513">
+<button id="change-hair-color-btn">Change Hair Color</button>
+
+
+
+  </div>
+
+
+  <audio id="giphyAudio" preload="auto"></audio> 
+
+  <script>
+    let initialHairColor = '#8b4513'; 
+let hairHeight = 320; 
+let bangsHeight = 100; 
+
+
+document.querySelector('.giphy').addEventListener('click', function() {
+  document.querySelector('.controls').style.display = 'flex';
+});
+
+document.querySelector('.giphy2').addEventListener('click', function() {
+  document.querySelector('.controls').style.display = 'none'; 
+  const hairElement = document.querySelector('.hair');
+  const bangsElement = document.querySelector('.bangs');
+
+  
+  hairHeight = 320; 
+  bangsHeight = 100; 
+  hairElement.style.height = `${hairHeight}px`;
+  bangsElement.style.height = `${bangsHeight}px`;
+  hairElement.style.backgroundColor = initialHairColor;
+  bangsElement.style.backgroundColor = initialHairColor;
+});
+
+document.getElementById('cut-hair-btn').addEventListener('click', () => {
+  if (hairHeight > 150) { 
+    hairHeight -= 20;
+    document.querySelector('.hair').style.height = `${hairHeight}px`; 
+  } else {
+    alert("더 이상 머리카락을 자를 수 없습니다!");
+  }
+});
+
+document.getElementById('change-hair-color-btn').addEventListener('click', () => {
+  const selectedColor = document.getElementById('color-picker').value;
+  const hairElement = document.querySelector('.hair');
+  const bangsElement = document.querySelector('.bangs');
+  const giphyAudio = document.getElementById('giphyAudio');
+
+    let audioFiles = [
+      'bgm.mp3',
+      'bgm1.mp3',
+      'bgm2.mp3', 
+    ];
+    const randomIndex = Math.floor(Math.random() * audioFiles.length);
+      giphyAudio.src = audioFiles[randomIndex]; 
+      giphyAudio.play();
+
+  hairElement.style.transition = 'background-color 0.5s ease';
+  bangsElement.style.transition = 'background-color 0.5s ease';
+  hairElement.style.backgroundColor = selectedColor;
+  bangsElement.style.backgroundColor = selectedColor;
+});
+
+
+    document.querySelector('.giphy').addEventListener('click', function() {
+      document.querySelector('.controls').style.display = 'flex'; 
+    });
+
+    document.querySelector('.giphy2').addEventListener('click', function() {
+      document.querySelector('.controls').style.display = 'none'; 
+      const hairElement = document.querySelector('.hair');
+      const bangsElement = document.querySelector('.bangs');
+      const brushes = document.querySelectorAll('.brush');
+  brushes.forEach(brush => brush.remove());
+
+      hairHeight = 320; 
+      bangsHeight = 100; 
+      hairElement.style.height = `${hairHeight}px`; 
+      bangsElement.style.height = `${bangsHeight}px`; 
+      
+        hairElement.style.backgroundColor = '#8b4513'; 
+        bangsElement.style.backgroundColor = '#8b4513'; 
+
+    });
+
+    document.getElementById('cut-hair-btn').addEventListener('click', () => {
+      if (hairHeight > 150) { 
+        hairHeight -= 20; 
+        document.querySelector('.hair').style.height = `${hairHeight}px`; 
+      } else {
+        alert("더 이상 머리카락을 자를 수 없습니다!");
+      }
+    });
+
+    document.getElementById('cut-bangs-btn').addEventListener('click', () => {
+      if (bangsHeight > 50) { 
+        bangsHeight -= 10;
+        document.querySelector('.bangs').style.height = `${bangsHeight}px`; 
+      } else {
+        alert("더 이상 앞머리를 자를 수 없습니다!");
+      }
+    });
+    const brushArea = document.getElementById('brushArea');
+const brushSizeInput = document.getElementById('brushSize');
+const brushTypeInput = document.getElementById('brushType');
+
+let brushSize = brushSizeInput.value;
+let brushType = brushTypeInput.value;
+
+// 브러쉬 크기 업데이트
+brushSizeInput.addEventListener('input', () => {
+  brushSize = brushSizeInput.value;
+});
+
+// 브러쉬 이미지 업데이트
+brushTypeInput.addEventListener('change', () => {
+  brushType = brushTypeInput.value;
+});
+
+// 헤어스타일 위에 브러쉬 이미지 그리기
+const hairElement = document.querySelector('.hair');
+const bangsElement = document.querySelector('.bangs');
+const hairTopElement = document.querySelector('.hair-top');
+
+// hair, bangs, hair-top 세 영역에 클릭 이벤트 추가
+hairElement.addEventListener('click', (e) => {
+  addBrushImage(e, hairElement);
+});
+
+bangsElement.addEventListener('click', (e) => {
+  addBrushImage(e, bangsElement);
+});
+
+hairTopElement.addEventListener('click', (e) => {
+  addBrushImage(e, hairTopElement);
+});
+
+// 브러쉬 이미지를 클릭한 위치에 추가하는 함수
+function addBrushImage(e, targetElement) {
+  const brush = document.createElement('img');
+  brush.src = brushType; 
+  brush.style.width = `${brushSize}px`;
+  brush.style.height = `${brushSize}px`;
+  brush.style.position = 'absolute';
+  brush.style.zIndex = '9999'; 
+
+
+  const targetRect = targetElement.getBoundingClientRect();
+  brush.style.left = `${e.clientX - targetRect.left - brushSize / 2}px`;
+  brush.style.top = `${e.clientY - targetRect.top - brushSize / 2}px`;
+
+  brush.classList.add('brush');
+  targetElement.appendChild(brush); 
+}
+
+</script>
+
+</body>
+</html>
